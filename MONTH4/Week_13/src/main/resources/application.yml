@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: springboot-multienv-full
+app:
+  message: "Hello from default"
+  activeMessage: "default active"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

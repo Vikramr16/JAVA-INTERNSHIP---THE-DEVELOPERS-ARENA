@@ -1,0 +1,2 @@
+INSERT INTO EMPLOYEE (NAME, ROLE) VALUES ('Alice', 'Developer');
+INSERT INTO EMPLOYEE (NAME, ROLE) VALUES ('Bob', 'Designer');

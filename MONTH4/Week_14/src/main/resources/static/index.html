@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>WebSocket Chat</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; margin: 0; padding: 0; }
+#chat { width: 90%; max-width: 800px; margin: 20px auto; }
+#messageArea { height: 400px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; }
+#form { display: flex; margin-top: 10px; }
+#message { flex: 1; padding: 8px; font-size: 14px; }
+#send { padding: 8px 12px; font-size: 14px; }
+</style>
+</head>
+<body>
+<div id="chat">
+<div>
+<label>Username: <input type="text" id="name" /></label>
+<button id="connect">Connect</button>
+<button id="disconnect" disabled>Disconnect</button>
+</div>
+<div id="messageArea"></div>
+<form id="form" onsubmit="sendMessage(event)">
+<input id="message" autocomplete="off" />
+<button id="send">Send</button>
+</form>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script>
+var stompClient = null;
+function connect() {
+var socket = new SockJS('/ws');
+stompClient = Stomp.over(socket);
+stompClient.connect({}, function(frame) {
+document.getElementById('connect').disabled = true;
+document.getElementById('disconnect').disabled = false;
+stompClient.subscribe('/topic/public', function(message) {
+showMessage(JSON.parse(message.body));
+});
+var joinMessage = {sender: document.getElementById('name').value, type: 'JOIN', content: ''};
+stompClient.send('/app/chat.send', {}, JSON.stringify(joinMessage));
+});
+}
+function disconnect() {
+if (stompClient !== null) {
+var leaveMessage = {sender: document.getElementById('name').value, type: 'LEAVE', content: ''};
+stompClient.send('/app/chat.send', {}, JSON.stringify(leaveMessage));
+stompClient.disconnect();
+stompClient = null;
+document.getElementById('connect').disabled = false;
+document.getElementById('disconnect').disabled = true;
+}
+}
+function sendMessage(event) {
+event.preventDefault();
+if (!stompClient) return;
+var messageContent = document.getElementById('message').value.trim();
+if(messageContent.length === 0) return;
+var chatMessage = {sender: document.getElementById('name').value, content: messageContent, type: 'CHAT'};
+stompClient.send('/app/chat.send', {}, JSON.stringify(chatMessage));
+document.getElementById('message').value = '';
+}
+function showMessage(message) {
+var area = document.getElementById('messageArea');
+var el = document.createElement('div');
+if(message.type === 'JOIN') {
+el.innerText = message.sender + ' joined';
+} else if(message.type === 'LEAVE') {
+el.innerText = message.sender + ' left';
+} else {
+el.innerText = message.sender + ': ' + message.content;
+}
+area.appendChild(el);
+area.scrollTop = area.scrollHeight;
+}
+document.getElementById('connect').addEventListener('click', function() {
+if(!document.getElementById('name').value) {
+alert('Enter username');
+return;
+}
+connect();
+});
+document.getElementById('disconnect').addEventListener('click', function() {
+disconnect();
+});
+</script>
+</body>
+</html>
