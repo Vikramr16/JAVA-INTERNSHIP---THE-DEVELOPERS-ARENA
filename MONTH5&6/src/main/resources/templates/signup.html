@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Signup</title>
+
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* LIGHT BLUE ANIMATED BACKGROUND */
+            background: linear-gradient(-45deg, #e0f4ff, #d6ecff, #cde7ff, #e6f7ff);
+            background-size: 400% 400%;
+            animation: bgMove 12s ease infinite;
+
+            font-family: Arial, sans-serif;
+        }
+
+        @keyframes bgMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glow-box {
+            width: 360px;
+            padding: 30px;
+
+            /* BLUE TRANSPARENT CARD */
+            background: rgba(0, 37, 79, 0.55);
+
+            border: 2px solid #00ccff;
+            box-shadow: 0 0 22px #00ccff;
+            border-radius: 18px;
+            text-align: center;
+            animation: glow 2.5s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 12px #00ccff; }
+            to { box-shadow: 0 0 35px #00ccff; }
+        }
+
+        .glow-box h2 {
+            color: #00ccff;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+
+        input {
+            width: 90%;
+            padding: 12px;
+            margin: 12px 0;
+            border: none;
+            border-bottom: 2px solid #00ccff;
+            background: transparent;
+            color: #b3eaff;
+            font-size: 16px;
+            outline: none;
+            transition: 0.4s;
+        }
+
+        input::placeholder {
+            color: #80e0ff;
+        }
+
+        input:focus {
+            box-shadow: 0 0 12px #00ccff;
+            border-bottom-color: #33ddff;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 18px;
+            border: none;
+            background: #00ccff;
+            color: black;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 0 22px #00ccff;
+            transition: 0.3s ease-in-out;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px #00ccff;
+        }
+
+        a {
+            display: block;
+            margin-top: 15px;
+            color: #80e8ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        a:hover {
+            text-shadow: 0 0 12px #00ccff;
+        }
+
+        p {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="glow-box">
+    <h2>SIGNUP</h2>
+
+    <form action="/signup" method="post">
+        <input type="text" name="name" placeholder="Full Name" required>
+
+        <input type="email" name="email" placeholder="Email" required>
+
+        <input type="text" name="username" placeholder="Choose Username" required>
+
+        <input type="password" name="password" placeholder="Password" required>
+
+        <input type="text" name="contactNo" placeholder="Contact Number">
+
+        <button type="submit">Create Account</button>
+    </form>
+
+    <a href="/login">Already have an account? Login</a>
+
+    <p th:if="${signupError}" th:text="${signupError}"></p>
+    <p th:if="${signupSuccess}" style="color:lightgreen;" th:text="${signupSuccess}"></p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Products</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+
+        .navbar {
+            background: #131921;
+            color: white;
+            padding: 15px;
+            font-size: 22px;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: white;
+            padding: 15px;
+            border-right: 1px solid #ddd;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 8px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .sidebar a:hover {
+            background: #f0f0f0;
+        }
+
+        .products {
+            flex: 1;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .price {
+            color: green;
+            font-weight: bold;
+        }
+
+        .view-btn {
+            padding: 6px 12px;
+            background: #ffa41c;
+            color: black;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        /* ❤️ wishlist */
+        .wishlist-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 22px;
+            color: #ccc;     /* empty */
+			transition: color 0.3s ease;
+        }
+
+        .wishlist-btn.liked {
+            color: red;      /* filled */
+        }
+		.wishlist-btn:hover {
+		    color: red;
+		}
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">My E-Commerce Store</div>
+
+<div class="container">
+
+    <!-- Categories -->
+    <div class="sidebar">
+        <h3>Categories</h3>
+        <a th:each="c : ${categories}"
+           th:href="@{/products/category/{id}(id=${c.id})}"
+           th:text="${c.name}">
+        </a>
+    </div>
+
+    <!-- Products -->
+    <div class="products">
+        <div class="card" th:each="p : ${products}">
+
+            <img th:src="@{${p.image}}">
+            <h4 th:text="${p.name}"></h4>
+            <p class="price">₹ <span th:text="${p.price}"></span></p>
+
+            <div class="actions">
+
+                <!-- View details -->
+                <a class="view-btn"
+                   th:href="@{/products/view/{id}(id=${p.id})}">
+                    View
+                </a>
+
+                <!-- ❤️ Wishlist -->
+                <form th:action="@{/products/wishlist/{id}(id=${p.id})}"
+                      method="post">
+                    <button type="submit"
+                            class="wishlist-btn"
+                            th:classappend="${wishlistIds != null and wishlistIds.contains(p.id)} ? 'liked' : ''">
+                        ♥
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
